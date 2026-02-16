@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "multiply.h"
+#include "primitive/multiply.h"
 
 int main(){
 

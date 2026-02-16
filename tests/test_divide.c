@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "divide.h"
+#include "primitive/divide.h"
 
 int main(){
 

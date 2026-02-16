@@ -1,4 +1,4 @@
-#include "centralnth.h"
+#include "calculus/centralnth.h"
 
 double (double (*f)(double), double x, double h, int num){
 

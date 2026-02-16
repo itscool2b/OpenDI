@@ -1,5 +1,5 @@
-#include "secondderivative.h"
-#include "centraldiff.h"
+#include "calculus/secondderivative.h"
+#include "calculus/centraldiff.h"
 #include <math.h>
 
 double (double (*f)(double), double x, double h){

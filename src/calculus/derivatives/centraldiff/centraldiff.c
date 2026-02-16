@@ -1,4 +1,4 @@
-#include "centraldiff.h"
+#include "calculus/centraldiff.h"
 
 double central_difference(double (*f)(double), double x, double h)
 {
