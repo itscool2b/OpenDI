@@ -26,3 +26,11 @@ The product of all input values as a `double`.
 ```c
 double result = multiply_numbers(3, 2.0, 3.0, 4.0);  // Returns 24.0
 ```
+
+## Notes
+
+None.
+
+## See Also
+
+divide_numbers(3)

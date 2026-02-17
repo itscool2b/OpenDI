@@ -32,3 +32,11 @@ double ceil_result = roundval("ceil", 3.2);     // Returns 4.0
 double neg_floor = roundval("floor", -3.7);     // Returns -4.0
 double invalid = roundval("round", 3.5);        // Returns 3.5 (unchanged)
 ```
+
+## Notes
+
+Any string other than "floor" or "ceil" returns the input value unchanged.
+
+## See Also
+
+No related functions.

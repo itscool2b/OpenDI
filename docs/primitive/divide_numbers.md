@@ -31,6 +31,10 @@ Returns `0.0` if:
 double result = divide_numbers(3, 24.0, 4.0, 2.0);  // Returns 3.0
 ```
 
-## Error Handling
+## Notes
 
 Division by zero is caught and returns 0.0 with an error message.
+
+## See Also
+
+multiply_numbers(3)

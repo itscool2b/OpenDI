@@ -26,17 +26,17 @@ The approximate derivative at point `x`.
 
 Returns `NAN` if `h` is 0.
 
-## Error Characteristics
-
-- First-order accurate (error proportional to h)
-- Tends to underestimate the derivative
-
 ## Example
 
 ```c
 double f(double x) { return x * x; }
 double result = backwarddiff(f, 3.0, 0.0001);  // ≈ 6.0
 ```
+
+## Notes
+
+- First-order accurate (error proportional to h)
+- Tends to underestimate the derivative
 
 ## See Also
 
