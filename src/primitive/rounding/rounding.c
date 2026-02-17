@@ -30,7 +30,7 @@ double roundval(const char* decision, double x){
 
     else{
 
-    return number;
+    return x;
 
     }
 

@@ -3,7 +3,7 @@
 
 int main() {
 
-    printf("%f", absolute(-1.0));
+    printf("%f", absolute(-1.0f));
 
     return 0;
 }

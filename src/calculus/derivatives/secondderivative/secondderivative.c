@@ -2,7 +2,7 @@
 #include "calculus/centraldiff.h"
 #include <math.h>
 
-double (double (*f)(double), double x, double h){
+double secondderivative(double (*f)(double), double x, double h){
 
     if (h == 0.0){
 

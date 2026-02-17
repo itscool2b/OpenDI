@@ -1,7 +1,7 @@
 #include "calculus/backwarddiff.h"
 #include <math.h>
 
-double (double (*f)(double), double x, double h){
+double backwarddiff(double (*f)(double), double x, double h){
     if (h == 0.0){
 
     return NAN;

@@ -2,39 +2,34 @@
 #include <stdarg.h>
 #include <math.h>
 
-typedef {min,max}operation;
+float minmax(int decision, int count, ...){
 
-float minmax(operation, int count, ...){
+	if (count == 0){
+		return NAN;
+	}
 
-if (count == 0){
+	va_list list;
+	va_start(list, count);
 
-    return NAN;
-}
+	float result = va_arg(list, double);
 
-va_list list;
-va_start(list,count);
+	if (decision == 0) {  // MIN
+		for (int i = 1; i < count; i++){
+			float val = va_arg(list, double);
+			if (val < result){
+				result = val;
+			}
+		}
+	}
+	else {  // MAX
+		for (int i = 1; i < count; i++){
+			float val = va_arg(list, double);
+			if (val > result){
+				result = val;
+			}
+		}
+	}
 
-
-
-if (decision = min){
-
-float min;
-for (int i = 0; i<count; i++){
-
-    
-
-}
-
-}
-else{
-
-//dodis
-
-float max;
-
-}
-
-
-
-
+	va_end(list);
+	return result;
 }
