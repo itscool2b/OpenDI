@@ -29,10 +29,10 @@ src/
 │   │   ├── diff_central_nth
 │   │   └── polydiff
 │   │
-│   ├── integrals/             [TODO]
-│   │   ├── trapezoidal
-│   │   ├── simpsons
-│   │   └── romberg
+│   ├── integrals/             [DONE]
+│   │   ├── romberg
+│   │   ├── trapezoidal        [TODO]
+│   │   └── simpsons           [TODO]
 │   │
 │   ├── roots/                 [TODO]
 │   │   ├── bisection
