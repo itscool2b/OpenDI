@@ -30,3 +30,7 @@ double result = subtract_numbers(3, 10.0, 3.0, 2.0);  // Returns 5.0
 ## Notes
 
 The function processes arguments left to right: `((first - second) - third) ...`
+
+## See Also
+
+add_numbers(3)

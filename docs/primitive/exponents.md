@@ -32,4 +32,8 @@ double result4 = exponents(0.0f, 0.0f);    // Returns 1.0
 
 ## Notes
 
-- If both `value` and `exponent` are 0, returns 1.0 (mathematical convention)
+If both `value` and `exponent` are 0, returns 1.0 (mathematical convention).
+
+## See Also
+
+No related functions.
