@@ -21,13 +21,11 @@ Adds a variable number of double-precision floating-point values.
 
 The sum of all input values as a `double`.
 
+Returns `0.0` if `count` is 0.
+
 ## Example
 
 ```c
 double result = add_numbers(3, 1.0, 2.0, 3.0);  // Returns 6.0
-double result2 = add_numbers(0);                 // Returns 0.0
+double result2 = add_numbers(0);                // Returns 0.0
 ```
-
-## Notes
-
-If `count` is 0, the function returns 0.0.

@@ -26,17 +26,17 @@ The approximate derivative at point `x`.
 
 Returns `0.0` if `h` is 0.
 
-## Error Characteristics
-
-- First-order accurate (error proportional to h)
-- Tends to overestimate the derivative
-
 ## Example
 
 ```c
 double f(double x) { return x * x; }
 double result = forwarddiff(f, 3.0, 0.0001);  // ≈ 6.0
 ```
+
+## Notes
+
+- First-order accurate (error proportional to h)
+- Tends to overestimate the derivative
 
 ## See Also
 

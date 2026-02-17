@@ -29,11 +29,11 @@ Returns `NAN` if `h` is 0.
 ## Example
 
 ```c
-double f(double x) { return x * x; }           // f''(x) = 2
-double result = secondderivative(f, 3.0, 0.001);  // ≈ 2.0
+double f(double x) { return x * x; }                // f''(x) = 2
+double result = secondderivative(f, 3.0, 0.001);    // ≈ 2.0
 
-double g(double x) { return x * x * x; }       // f''(x) = 6x
-double result2 = secondderivative(g, 2.0, 0.001); // ≈ 12.0
+double g(double x) { return x * x * x; }            // f''(x) = 6x
+double result2 = secondderivative(g, 2.0, 0.001);   // ≈ 12.0
 ```
 
 ## Notes
