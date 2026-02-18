@@ -1,10 +1,10 @@
-# OpenDI Integration Test Report
+# OpenDI Scenario Test Report
 
 ## Overview
 
-This document details the comprehensive integration testing of the OpenDI library, analyzing how all 18 functions work together in realistic mathematical workflows.
+This document details the comprehensive scenario testing of the OpenDI library, analyzing how all 18 functions work together in realistic mathematical workflows.
 
-**Test File:** `test_opendi_full_integration.c`  
+**Test File:** `test_opendi_full_scenario.c`  
 **Date:** 2026-02-18  
 **Functions Tested:** 18 (8 primitive, 5 calculus, 5 vector)
 
