@@ -67,8 +67,8 @@ src/
 │       ├── cosh
 │       └── tanh
 │
-├── linalg/                    [TODO]
-│   ├── vec/
+├── linalg/
+│   ├── vectors/               [DONE]
 │   │   ├── vecadd
 │   │   ├── vecscale
 │   │   ├── vecdot
