@@ -2,6 +2,14 @@
 
 A lightweight, portable C library for mathematical computation. Designed for bare-metal environments, embedded systems, and general-purpose numerical computing.
 
+## Features
+
+- **Primitive Operations** - Basic arithmetic (add, subtract, multiply, divide, exponents, absolute, minmax, rounding)
+- **Calculus** - Numerical differentiation (forward, backward, central) and integration (Romberg)
+- **Linear Algebra** - Vector operations (addition, dot product, cross product, norm, scaling)
+- **Zero Dependencies** - Pure C99, no external libraries required
+- **Bare Metal Ready** - Works on embedded systems without OS
+
 ## Documentation
 
 API documentation is located in `docs/`. Each function has its own documentation file organized by module.
@@ -16,11 +24,11 @@ The test suite is organized into three categories:
 
 See `tests/README.md` for detailed testing instructions.
 
-## Module Checklist
+## Current Modules
 
 ```
 src/
-├── primitive/                 [DONE]
+├── primitive/
 │   ├── absolute
 │   ├── add
 │   ├── subtract
@@ -31,79 +39,49 @@ src/
 │   └── exponents
 │
 ├── calculus/
-│   ├── derivatives/           [DONE]
+│   ├── derivatives/
 │   │   ├── forwarddiff
 │   │   ├── backwarddiff
 │   │   ├── centraldiff
-│   │   ├── secondderivative
-│   │   ├── diff_central_nth
-│   │   └── polydiff
+│   │   └── secondderivative
 │   │
-│   ├── integrals/             [DONE]
-│   │   ├── romberg
-│   │   ├── trapezoidal        [TODO]
-│   │   └── simpsons           [TODO]
-│   │
-│   ├── roots/                 [TODO]
-│   │   ├── bisection
-│   │   ├── newtonraphson
-│   │   └── secant
-│   │
-│   ├── optimize/              [TODO]
-│   │   └── goldensection
-│   │
-│   └── ode/                   [TODO]
-│       ├── euler
-│       └── rk4
+│   └── integrals/
+│       └── romberg
 │
-├── elementary/                [TODO]
-│   ├── trig/
-│   │   ├── sin
-│   │   ├── cos
-│   │   ├── tan
-│   │   ├── asin
-│   │   ├── acos
-│   │   └── atan
-│   │
-│   ├── explog/
-│   │   ├── exp
-│   │   ├── log
-│   │   ├── log2
-│   │   ├── sqrt
-│   │   └── cbrt
-│   │
-│   └── hyperbolic/
-│       ├── sinh
-│       ├── cosh
-│       └── tanh
-│
-├── linalg/
-│   ├── vectors/               [DONE]
-│   │   ├── vecadd
-│   │   ├── vecscale
-│   │   ├── vecdot
-│   │   ├── veccross
-│   │   └── vecnorm
-│   │
-│   └── mat/
-│       ├── matmul
-│       ├── mattranspose
-│       ├── matdet
-│       └── matinverse
-│
-├── special/                   [TODO]
-│   ├── gamma
-│   ├── erf
-│   └── beta
-│
-├── stats/                     [TODO]
-│   ├── mean
-│   ├── variance
-│   └── linearregression
-│
-└── utils/                     [TODO]
-    ├── clamp
-    ├── lerp
-    ├── smoothstep
-    └── floatequals
+└── linalg/
+    └── vectors/
+        ├── vecadd
+        ├── vecscale
+        ├── vecdot
+        ├── veccross
+        └── vecnorm
 ```
+
+## Quick Start
+
+```c
+#include "primitive/add.h"
+#include "linalg/vectors/vecadd.h"
+
+int main() {
+    // Basic arithmetic
+    double sum = add_numbers(3, 1.0, 2.0, 3.0);  // Returns 6.0
+    
+    // Vector operations
+    double a[] = {1.0, 2.0, 3.0};
+    double b[] = {4.0, 5.0, 6.0};
+    double *result = vecadd(a, b, 3);  // Returns {5.0, 7.0, 9.0}
+    
+    free(result);  // Remember to free allocated memory
+    return 0;
+}
+```
+
+Compile with:
+```bash
+gcc -I/path/to/opendi/include your_program.c -o your_program -lm
+```
+
+## License
+
+See LICENSE file for details.
