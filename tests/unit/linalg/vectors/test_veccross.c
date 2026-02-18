@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "linalg/vectors/veccross.h"
+#include "../../../../../include/linalg/vectors/veccross.h"
 
 #define EPSILON 1e-10
 

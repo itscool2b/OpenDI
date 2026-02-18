@@ -10,17 +10,17 @@
 #include <math.h>
 #include <time.h>
 #include <string.h>
-#include "primitive/absolute.h"
-#include "primitive/add.h"
-#include "primitive/exponents.h"
-#include "calculus/forwarddiff.h"
-#include "calculus/centraldiff.h"
-#include "calculus/romberg.h"
-#include "linalg/vectors/vecadd.h"
-#include "linalg/vectors/vecdot.h"
-#include "linalg/vectors/vecnorm.h"
-#include "linalg/vectors/vecscale.h"
-#include "linalg/vectors/veccross.h"
+#include "../../../include/primitive/absolute.h"
+#include "../../../include/primitive/add.h"
+#include "../../../include/primitive/exponents.h"
+#include "../../../include/calculus/forwarddiff.h"
+#include "../../../include/calculus/centraldiff.h"
+#include "../../../include/calculus/romberg.h"
+#include "../../../include/linalg/vectors/vecadd.h"
+#include "../../../include/linalg/vectors/vecdot.h"
+#include "../../../include/linalg/vectors/vecnorm.h"
+#include "../../../include/linalg/vectors/vecscale.h"
+#include "../../../include/linalg/vectors/veccross.h"
 
 /* Get high-resolution time in seconds */
 double get_time() {
