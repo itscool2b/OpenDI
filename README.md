@@ -59,9 +59,11 @@ src/
 
 ## Quick Start
 
+Include the master header to access all functionality:
+
 ```c
-#include "primitive/add.h"
-#include "linalg/vectors/vecadd.h"
+#include "opendi.h"
+#include <stdlib.h>  // For free()
 
 int main() {
     // Basic arithmetic
@@ -80,6 +82,13 @@ int main() {
 Compile with:
 ```bash
 gcc -I/path/to/opendi/include your_program.c -o your_program -lm
+```
+
+Or include individual modules:
+```c
+#include "primitive/add.h"           // Just arithmetic
+#include "calculus/romberg.h"        // Just integration
+#include "linalg/vectors/vecadd.h"   // Just vector ops
 ```
 
 ## License
