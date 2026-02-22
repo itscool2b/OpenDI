@@ -7,7 +7,7 @@ double romberg_integrate(double (*f)(double), double a, double b, double eps, in
     //not using VLA since im not a fucking chud...
     double *r_prev = calloc(k_max + 1, sizeof(double)); //+1 to avoid overflow
     double *r_curr = calloc(k_max + 1, sizeof(double));
-    
+
 r_prev[0] = (h/2) * (f(b) + f(a));
 
 for (int i = 0; i < k_max; i++){
@@ -24,7 +24,7 @@ for (int i = 0; i < k_max; i++){
     r_curr[0] = 0.5*r_prev[0]+h*c;
 
     for (int m = 1; m <= (i+1); m++){
-   
+
     pow4 *= 4.0;
     r_curr[m] = ((pow4*r_curr[m-1]) - r_prev[m-1]) / (pow4-1);
 
@@ -36,7 +36,7 @@ for (int i = 0; i < k_max; i++){
     free(r_curr);
     return result;
 
-    }    
+    }
 
     double *temp = r_prev;
     r_prev = r_curr;

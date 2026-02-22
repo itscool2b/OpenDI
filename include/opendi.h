@@ -6,7 +6,7 @@
  *     #include "opendi.h"
  * 
  * This header includes all primitive operations, calculus functions,
- * and linear algebra operations.
+ * linear algebra operations, and the arena allocator.
  */
 
 #ifndef OPENDI_H
@@ -15,6 +15,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*
+ * Arena Allocator
+ * Linear allocator for fast, contiguous memory allocations
+ */
+#include "arena.h"
 
 /*
  * Primitive Operations

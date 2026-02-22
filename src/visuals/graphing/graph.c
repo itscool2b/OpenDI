@@ -2,12 +2,12 @@
 #include "visuals/graph.h"
 #include <stdlib.h>
 
-void graph(double (*f)(double), double x_min, double x_max, int num_points, const char *title)
+void graph(Arena *arena, double (*f)(double), double x_min, double x_max, int num_points, const char *title)
 {
 
-
-    double *x = malloc(num_points*sizeof(double));
-    double *y = malloc(num_points*sizeof(double));
+    uint64_t usage = num_points*sizeof(double);
+    double *x = arena_push(arena, usage);
+    double *y = arena_push(arena, usage);
 
     double y_min = f(x_min);
     double y_max = y_min;

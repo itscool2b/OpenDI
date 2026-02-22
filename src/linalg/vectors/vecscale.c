@@ -1,9 +1,12 @@
 #include <stdlib.h>
 #include "linalg/vectors/vecscale.h"
+#include "arena.h"
+#include <stdint.h>
 
-double *vecscale(const double *arr, double scalar, size_t length){
+double *vecscale(Arena *arena, const double *arr, double scalar, size_t length){
 
-    double *resultantvec = malloc(length * sizeof(double));
+    uint64_t usage = length * sizeof(double);
+    double *resultantvec = arena_push(arena, usage);
 
     if(resultantvec == NULL){
         return NULL;
@@ -15,4 +18,5 @@ double *vecscale(const double *arr, double scalar, size_t length){
     }
 
     return resultantvec;
+
 }

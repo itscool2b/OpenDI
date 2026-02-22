@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include "linalg/vectors/veccross.h"
 
-double *veccross(const double *vec1, const double *vec2){
+double *veccross(Arena *arena, const double *vec1, const double *vec2){
 
-    double *r = malloc(VECCROSS_SIZE*sizeof(double));
+    uint64_t usage = VECCROSS_SIZE*sizeof(double);
+    double *r = arena_push(arena, usage);
 
     if (r == NULL){
         return NULL;

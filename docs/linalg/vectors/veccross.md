@@ -5,7 +5,7 @@
 ```c
 #include "linalg/vectors/veccross.h"
 
-double *veccross(const double *vec1, const double *vec2);
+double *veccross(Arena *arena, const double *vec1, const double *vec2);
 ```
 
 ## Description
@@ -19,42 +19,45 @@ The cross product produces a vector that is perpendicular to both input vectors.
 
 ## Parameters
 
+- `arena`: Arena allocator for memory
 - `vec1`: Pointer to the first 3D vector
 - `vec2`: Pointer to the second 3D vector
 
 ## Return Value
 
-A pointer to a newly allocated 3-element array containing the cross product.
+A pointer to memory in the arena containing the 3-element cross product.
 
-Returns `NULL` if memory allocation fails.
+Returns `NULL` if arena allocation fails.
 
 ## Example
 
 ```c
+Arena *arena = arena_create(1024);
+
 // Standard basis vectors
 double i[] = {1.0, 0.0, 0.0};  // x-axis
 double j[] = {0.0, 1.0, 0.0};  // y-axis
-double *k = veccross(i, j);    // Returns {0.0, 0.0, 1.0} (z-axis)
-free(k);  // Remember to free the allocated memory
+double *k = veccross(arena, i, j);    // Returns {0.0, 0.0, 1.0} (z-axis)
 
 // General case
 double a[] = {1.0, 2.0, 3.0};
 double b[] = {4.0, 5.0, 6.0};
-double *result = veccross(a, b);  // Returns {-3.0, 6.0, -3.0}
-free(result);
+double *result = veccross(arena, a, b);  // Returns {-3.0, 6.0, -3.0}
+
+arena_destroy(arena);
 ```
 
 ## Notes
 
-**Memory Management:** This function dynamically allocates memory for the result vector using `malloc()`. The caller is responsible for freeing this memory using `free()` when it is no longer needed to prevent memory leaks.
+Memory is allocated from the arena. Use `arena_destroy()` or `arena_clear()` to free.
 
-This function only works with 3-dimensional vectors. Both input vectors must have exactly 3 elements.
+This function only works with 3-dimensional vectors.
 
-Properties of the cross product:
+Properties:
 - Anti-commutative: `a × b = -(b × a)`
 - Self-cross is zero: `a × a = 0`
 - Perpendicular to both inputs
 
 ## See Also
 
-vecdot(3), vecnorm(3)
+vecdot(3), vecnorm(3), arena_create(3), arena_destroy(3)

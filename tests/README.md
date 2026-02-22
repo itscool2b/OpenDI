@@ -27,7 +27,7 @@ tests/
 ### Running Unit Tests
 
 ```bash
-# Compile and run vector tests
+# Compile and run vector tests (include arena.h)
 gcc -I../../include unit/linalg/vectors/test_vecadd.c src/linalg/vectors/vecadd.c -o test_vecadd -lm
 ./test_vecadd
 ```
@@ -168,7 +168,7 @@ Recommended CI pipeline:
 
 ## Notes
 
-- All vector tests that use `malloc` should `free` their results
+- Vector tests use arena allocator (arena_create/arena_destroy)
 - Performance tests should be compiled with `-O2` or `-O3`
 - Include paths use relative paths (`../../../include/`) for portability
 - Tests should be self-contained (no external dependencies beyond OpenDI)

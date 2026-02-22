@@ -63,18 +63,21 @@ Include the master header to access all functionality:
 
 ```c
 #include "opendi.h"
-#include <stdlib.h>  // For free()
 
 int main() {
+    // Create an arena for memory allocation
+    Arena *arena = arena_create(1024);
+    
     // Basic arithmetic
     double sum = add_numbers(3, 1.0, 2.0, 3.0);  // Returns 6.0
     
-    // Vector operations
+    // Vector operations (using arena)
     double a[] = {1.0, 2.0, 3.0};
     double b[] = {4.0, 5.0, 6.0};
-    double *result = vecadd(a, b, 3);  // Returns {5.0, 7.0, 9.0}
+    double *result = vecadd(arena, a, b, 3);  // Returns {5.0, 7.0, 9.0}
     
-    free(result);  // Remember to free allocated memory
+    // Free everything at once
+    arena_destroy(arena);
     return 0;
 }
 ```
@@ -88,9 +91,21 @@ Or include individual modules:
 ```c
 #include "primitive/add.h"           // Just arithmetic
 #include "calculus/romberg.h"        // Just integration
-#include "linalg/vectors/vecadd.h"   // Just vector ops
+#include "linalg/vectors/vecadd.h"   // Just vector ops (requires arena)
 ```
 
 ## License
 
 See LICENSE file for details.
+
+---
+
+## Transparency
+
+This project uses AI assistance for:
+
+- **File organization** - Test suite structure (unit/scenarios/performance)
+- **Documentation** - API docs, README updates, arena allocator guide
+- **Testing** - Unit tests, scenario tests, performance benchmarks
+
+We believe in transparency and not slopping code.
