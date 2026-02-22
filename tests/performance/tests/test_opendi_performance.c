@@ -21,6 +21,7 @@
 #include "../../../include/linalg/vectors/vecnorm.h"
 #include "../../../include/linalg/vectors/vecscale.h"
 #include "../../../include/linalg/vectors/veccross.h"
+#include "../../../include/arena.h"
 
 /* Get high-resolution time in seconds */
 double get_time() {
@@ -85,15 +86,18 @@ void benchmark_vecadd() {
             b[i] = (double)(n - i);
         }
         
+        /* Create arena for benchmark */
+        Arena *arena = arena_create(n * sizeof(double) + 1024);
+        
         /* Warmup cache */
-        double *result = vecadd(a, b, n);
-        free(result);
+        double *result = vecadd(arena, a, b, n);
+        arena_clear(arena);
         
         /* Benchmark */
         double start = get_time();
         for (int iter = 0; iter < iterations; iter++) {
-            result = vecadd(a, b, n);
-            free(result);
+            result = vecadd(arena, a, b, n);
+            arena_clear(arena);
         }
         double end = get_time();
         
@@ -114,6 +118,7 @@ void benchmark_vecadd() {
         
         tracked_free(a, n * sizeof(double));
         tracked_free(b, n * sizeof(double));
+        arena_destroy(arena);
     }
 }
 
@@ -285,13 +290,15 @@ void benchmark_memory_overhead() {
     }
     double manual_time = get_time() - start;
     
-    /* Time OpenDI (with malloc/free) */
+    /* Time OpenDI (with arena) */
+    Arena *arena = arena_create(n * sizeof(double) + 1024);
     start = get_time();
     for (int iter = 0; iter < iterations; iter++) {
-        double *r = vecadd(a, b, n);
-        free(r);
+        double *r = vecadd(arena, a, b, n);
+        arena_clear(arena);
     }
     double opendi_time = get_time() - start;
+    arena_destroy(arena);
     
     free(a);
     free(b);
@@ -302,11 +309,9 @@ void benchmark_memory_overhead() {
     format_time(opendi_time / iterations, opendi_str);
     
     printf("Manual (no alloc):  %s per operation\n", manual_str);
-    printf("OpenDI (with alloc):%s per operation\n", opendi_str);
+    printf("OpenDI (with arena):%s per operation\n", opendi_str);
     printf("Overhead factor:    %.2fx\n", opendi_time / manual_time);
-    printf("Memory allocated:   %s per call\n", 
-           (n * sizeof(double) >= 1024) ? ">= 1 KB" : "< 1 KB");
-    printf("\nRecommendation: For high-frequency ops, reuse buffers or use stack arrays\n");
+    printf("\nRecommendation: Arena allocator is much faster than malloc/free\n");
 }
 
 /* ==========================================================================
@@ -319,13 +324,15 @@ void benchmark_cross_product() {
     double b[] = {4.0, 5.0, 6.0};
     const int iterations = 10000000;
     
-    /* OpenDI veccross */
+    /* OpenDI veccross with arena */
+    Arena *arena = arena_create(1024);
     double start = get_time();
     for (int i = 0; i < iterations; i++) {
-        double *r = veccross(a, b);
-        free(r);
+        double *r = veccross(arena, a, b);
+        arena_clear(arena);
     }
     double opendi_time = get_time() - start;
+    arena_destroy(arena);
     
     /* Manual computation (inline) */
     start = get_time();
@@ -341,7 +348,7 @@ void benchmark_cross_product() {
     format_time(opendi_time / iterations, opendi_str);
     format_time(manual_time / iterations, manual_str);
     
-    printf("OpenDI veccross:    %s per operation (with malloc/free)\n", opendi_str);
+    printf("OpenDI veccross:    %s per operation (with arena)\n", opendi_str);
     printf("Manual inline:      %s per operation\n", manual_str);
     printf("Difference:         %.2fx slower (allocation overhead)\n", 
            opendi_time / manual_time);

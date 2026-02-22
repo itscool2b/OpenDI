@@ -1,5 +1,5 @@
 /*
- * OpenDI Full Integration Test
+ * OpenDI Full Scenario Test
  * 
  * Tests all 18 functions working together in realistic scenarios:
  * - Particle motion analysis (physics simulation)
@@ -14,7 +14,6 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 #include "../../../include/primitive/absolute.h"
 #include "../../../include/primitive/add.h"
@@ -34,6 +33,7 @@
 #include "../../../include/linalg/vectors/vecdot.h"
 #include "../../../include/linalg/vectors/vecnorm.h"
 #include "../../../include/linalg/vectors/vecscale.h"
+#include "../../../include/arena.h"
 
 #define EPSILON 1e-6
 #define PI 3.14159265358979323846
@@ -78,10 +78,15 @@ double speed_func(double t) {
 /* 
  * Test 1: Particle Motion Analysis
  * Chains: exponents -> forwarddiff/centraldiff -> vecnorm -> vecscale -> veccross
- * Uses numerical differentiation, vector operations, and integration
  */
 void particle_motion_analysis() {
     printf("\n--- Test 1: Particle Motion Analysis ---\n");
+    
+    Arena *arena = arena_create(4096);
+    if (!arena) {
+        printf("Failed to create arena\n");
+        return;
+    }
     
     double t = 2.0;
     double h = 1e-6;
@@ -90,7 +95,7 @@ void particle_motion_analysis() {
     double position[] = {pos_x(t), pos_y(t), pos_z(t)};
     print_vec("Position r(t)", position, 3);
     
-    // Velocity via numerical differentiation (3 methods compared)
+    // Velocity via numerical differentiation
     double vx_forward = forwarddiff(pos_x, t, h);
     double vx_central = central_difference(pos_x, t, h);
     double vy_central = central_difference(pos_y, t, h);
@@ -99,7 +104,6 @@ void particle_motion_analysis() {
     double velocity[] = {vx_central, vy_central, vz_central};
     print_vec("Velocity v(t)", velocity, 3);
     
-    // Velocity should be approximately (1, 4, 12) at t=2
     check(vx_central > 0.9 && vx_central < 1.1 && 
           vy_central > 3.0 && vy_central < 5.0 && 
           vz_central > 10.0 && vz_central < 14.0,
@@ -124,18 +128,17 @@ void particle_motion_analysis() {
     check(distance > 0, "Distance is positive");
     
     // Unit tangent via vecscale (normalization)
-    double *unit_tangent = vecscale(velocity, 1.0 / speed, 3);
+    double *unit_tangent = vecscale(arena, velocity, 1.0 / speed, 3);
     print_vec("Unit tangent T(t)", unit_tangent, 3);
     double tangent_norm = vecnorm(unit_tangent, 3);
     check(fabs(tangent_norm - 1.0) < EPSILON, "Unit tangent has length 1");
     
     // Angular momentum via veccross
-    double *angular_momentum = veccross(position, velocity);
+    double *angular_momentum = veccross(arena, position, velocity);
     print_vec("Angular momentum L", angular_momentum, 3);
     check(1, "Angular momentum computed via cross product");
     
-    free(unit_tangent);
-    free(angular_momentum);
+    arena_destroy(arena);
 }
 
 /*
@@ -159,7 +162,7 @@ void force_field_analysis() {
     double force_mag = vecnorm(F, 3);
     printf("    |F| = %.4f\n", force_mag);
     
-    // Verify: |F| = sqrt(x^2 + y^2 + z^2) using absolute, exponents, add_numbers
+    // Verify: |F| = sqrt(x^2 + y^2 + z^2)
     double fx2 = exponents(absolute(F[0]), 2);
     double fy2 = exponents(absolute(F[1]), 2);
     double fz2 = exponents(absolute(F[2]), 2);
@@ -181,25 +184,31 @@ void force_field_analysis() {
 void statistical_pipeline() {
     printf("\n--- Test 3: Statistical Pipeline ---\n");
     
+    Arena *arena = arena_create(4096);
+    if (!arena) {
+        printf("Failed to create arena\n");
+        return;
+    }
+    
     double p1[] = {1.0, 2.0};
     double p2[] = {3.0, 4.0};
     double p3[] = {5.0, 6.0};
     double p4[] = {7.0, 8.0};
     
     // Mean calculation: sum all points then scale by 1/4
-    double *sum1 = vecadd(p1, p2, 2);
-    double *sum2 = vecadd(p3, p4, 2);
-    double *total = vecadd(sum1, sum2, 2);
-    double *mean = vecscale(total, 0.25, 2);
+    double *sum1 = vecadd(arena, p1, p2, 2);
+    double *sum2 = vecadd(arena, p3, p4, 2);
+    double *total = vecadd(arena, sum1, sum2, 2);
+    double *mean = vecscale(arena, total, 0.25, 2);
     print_vec("Mean", mean, 2);
     check(fabs(mean[0] - 4.0) < EPSILON && fabs(mean[1] - 5.0) < EPSILON, "Mean correct");
     
     // Distances from mean
-    double *neg_mean = vecscale(mean, -1.0, 2);
-    double *diff1 = vecadd(p1, neg_mean, 2);
-    double *diff2 = vecadd(p2, neg_mean, 2);
-    double *diff3 = vecadd(p3, neg_mean, 2);
-    double *diff4 = vecadd(p4, neg_mean, 2);
+    double *neg_mean = vecscale(arena, mean, -1.0, 2);
+    double *diff1 = vecadd(arena, p1, neg_mean, 2);
+    double *diff2 = vecadd(arena, p2, neg_mean, 2);
+    double *diff3 = vecadd(arena, p3, neg_mean, 2);
+    double *diff4 = vecadd(arena, p4, neg_mean, 2);
     
     double d1 = vecnorm(diff1, 2);
     double d2 = vecnorm(diff2, 2);
@@ -209,19 +218,16 @@ void statistical_pipeline() {
     printf("    Distances from mean: %.4f, %.4f, %.4f, %.4f\n", d1, d2, d3, d4);
     check(fabs(d1 - d4) < EPSILON && fabs(d2 - d3) < EPSILON, "Symmetric distances");
     
-    free(sum1); free(sum2); free(total); free(mean);
-    free(neg_mean);
-    free(diff1); free(diff2); free(diff3); free(diff4);
+    arena_destroy(arena);
 }
 
 /*
  * Test 4: Precision and Rounding Workflow
- * Chains: romberg -> multiply_numbers -> roundval -> primitive arithmetic chain
  */
 void precision_workflow() {
     printf("\n--- Test 4: Precision Workflow ---\n");
     
-    // Approximate PI using Romberg integration: π = 4 * ∫(0 to 1) sqrt(1-x²) dx
+    // Approximate PI using Romberg integration
     auto double quarter_circle(double x) {
         return sqrt(1.0 - exponents(x, 2));
     }
@@ -250,7 +256,7 @@ void precision_workflow() {
 }
 
 int main() {
-    printf("OpenDI Full Integration Test\n");
+    printf("OpenDI Full Scenario Test\n");
     printf("Testing all 18 functions in combined workflows\n");
     printf("Functions: primitive (8), calculus (5), vectors (5)\n");
     
@@ -264,7 +270,7 @@ int main() {
     printf("Failed: %d\n", test_failed);
     
     if (test_failed == 0) {
-        printf("All integration tests passed.\n");
+        printf("All scenario tests passed.\n");
     } else {
         printf("Some tests failed.\n");
     }

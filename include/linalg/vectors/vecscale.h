@@ -2,7 +2,8 @@
 #define VECSCALE_H
 
 #include <stddef.h>
+#include "../../arena.h"
 
-double *vecscale(const double *arr, double scalar, size_t length);
+double *vecscale(Arena *arena, const double *arr, double scalar, size_t length);
 
 #endif
