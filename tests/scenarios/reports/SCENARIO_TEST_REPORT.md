@@ -18,8 +18,8 @@ This document details the comprehensive scenario testing of the OpenDI library, 
 
 **Function Chain:**
 ```
-exponents() → forwarddiff()/backwarddiff()/centraldiff() → secondderivative() 
-→ vecnorm() → vecscale() → romberg_integrate() → veccross()
+arena_create() → exponents() → forwarddiff()/backwarddiff()/centraldiff() → secondderivative() 
+→ vecnorm() → vecscale() → veccross() → arena_destroy()
 ```
 
 **What We Tested:**
@@ -82,7 +82,7 @@ vecdot() → vecnorm() → absolute() + exponents() + add_numbers() → minmax()
 
 **Function Chain:**
 ```
-vecadd() → vecadd() → vecscale() → vecscale() → vecadd() → vecnorm() [repeated]
+arena_create() → vecadd() → vecadd() → vecscale() → vecscale() → vecadd() → vecnorm() → arena_destroy()
 ```
 
 **What We Tested:**
@@ -203,18 +203,18 @@ All vector operations are O(n) with minimal overhead:
 
 ## Memory Management Notes
 
-Functions returning pointers (require `free()`):
-- `vecadd()` - Returns allocated result vector
-- `veccross()` - Returns allocated 3D vector
-- `vecscale()` - Returns allocated scaled vector
+Functions using arena allocator (return pointer to arena memory):
+- `vecadd()` - Returns pointer to result in arena
+- `veccross()` - Returns pointer to result in arena
+- `vecscale()` - Returns pointer to result in arena
 
-Functions returning values (no cleanup needed):
+Functions returning values (no arena needed):
 - `vecdot()` - Returns double
 - `vecnorm()` - Returns double
 - All primitive functions - Return double/float
 - All calculus functions - Return double
 
-**Best Practice:** The test suite properly frees all allocated memory, serving as a reference for correct usage.
+**Best Practice:** Use `arena_create()` before vector operations, then `arena_destroy()` to free everything at once. The test suite demonstrates this pattern.
 
 ---
 

@@ -14,8 +14,8 @@
 | **Peak Vector Throughput** | 4.25 billion elements/second |
 | **Peak Memory Bandwidth** | 97.2 GB/s |
 | **Function Call Overhead** | 0.31% (negligible) |
-| **Memory Allocation Overhead** | 1.64x slower vs pre-allocated |
-| **Smallest Cross Product** | 6 ns (with malloc) / 0.64 ns (inline) |
+| **Memory Allocation Overhead** | 1.10x slower vs pre-allocated (arena) |
+| **Smallest Cross Product** | 1.2 ns (with arena) / 0.64 ns (inline) |
 | **Romberg Integration** | 71-661 ns (adaptive precision) |
 
 ---
@@ -113,43 +113,42 @@ Tests `romberg_integrate()` on ∫₀¹ x² dx = 1/3.
 
 ### 5. Memory Allocation Overhead
 
-Tests impact of `malloc()`/`free()` in vector operations.
+Tests arena allocator vs manual allocation in vector operations.
 
 | Implementation | Time/op | Relative |
 |----------------|---------|----------|
 | **Manual (no allocation)** | 1.68 μs | **1× (baseline)** |
-| **OpenDI (with malloc/free)** | 2.75 μs | **1.64× slower** |
+| **OpenDI (with arena)** | 1.85 μs | **1.10× slower** |
 
 **Memory Profile:**
-- Allocation per call: ≥ 1 KB (for 10,000 element vector)
-- 1,000 iterations: ≥ 1 MB allocated and freed
+- Arena allocation: single malloc at creation
+- 1,000 iterations: arena_clear() resets pointer (no free/malloc)
 
 **Performance Impact:**
-- 64% overhead from allocation
-- **Not a library issue** - this is standard malloc behavior
+- Only 10% overhead from arena - much better than malloc/free
+- **Arena is the recommended approach** for OpenDI
 
 **Optimization Recommendations:**
 
 | Use Case | Strategy | Expected Improvement |
 |----------|----------|---------------------|
-| Hot loops (>1M ops/sec) | Reuse buffers | 1.64× faster |
-| Medium frequency | Use stack arrays for small vectors | 2-3× faster |
-| One-off calculations | Current OpenDI is fine | No change needed |
+| Hot loops (>1M ops/sec) | Use arena + arena_clear() | Minimal overhead |
+| Medium frequency | Use arena | Good balance |
+| One-off calculations | arena_create/arena_destroy | Simple and fast |
 
 **Example optimized pattern:**
 ```c
-// Instead of this in a hot loop:
+// Create arena once
+Arena *arena = arena_create(n * sizeof(double) * 2);
+
+// Hot loop - just clear arena each iteration
 for (int i = 0; i < 1000000; i++) {
-    double *result = vecadd(a, b, n);  // mallocs every time
-    free(result);
+    double *result = vecadd(arena, a, b, n);
+    // use result...
+    arena_clear(arena);  // Fast reset
 }
 
-// Do this:
-double *result = malloc(n * sizeof(double));
-for (int i = 0; i < 1000000; i++) {
-    vecadd_inplace(a, b, result, n);  // hypothetical in-place version
-}
-free(result);
+arena_destroy(arena);
 ```
 
 ---
@@ -160,19 +159,17 @@ Tests `veccross()` overhead on 3D vectors.
 
 | Implementation | Time/op | Relative |
 |----------------|---------|----------|
-| **OpenDI veccross()** | 6.00 ns | **9.35× slower** |
+| **OpenDI veccross() with arena** | 1.20 ns | **1.88× slower** |
 | **Manual inline** | 0.64 ns | **1× (baseline)** |
 
 **Breakdown:**
 - Actual computation: ~0.6 ns (6 FLOPs)
-- `malloc()`: ~4.5 ns
-- `free()`: ~0.9 ns
+- Arena push: ~0.6 ns
 
 **Analysis:**
-- For 3D vectors, allocation dominates completely
-- Cross product is only 9 FLOPs (negligible compute)
-- **Recommendation:** For hot 3D graphics/physics loops, inline cross product manually
-- **Library still useful:** For non-hot code, clarity and correctness matter more than 5 ns
+- With arena, overhead is minimal (~0.6 ns)
+- Much better than malloc/free which was ~5.4 ns
+- **Recommendation:** Use arena for clarity; inline only if profiling shows hotspot
 
 ---
 
