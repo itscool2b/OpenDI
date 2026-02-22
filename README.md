@@ -97,3 +97,15 @@ Or include individual modules:
 ## License
 
 See LICENSE file for details.
+
+---
+
+## Transparency
+
+This project uses AI assistance for:
+
+- **File organization** - Test suite structure (unit/scenarios/performance)
+- **Documentation** - API docs, README updates, arena allocator guide
+- **Testing** - Unit tests, scenario tests, performance benchmarks
+
+We believe in transparency and not slopping code.
