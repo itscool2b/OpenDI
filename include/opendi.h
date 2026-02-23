@@ -55,6 +55,15 @@ extern "C" {
 #include "linalg/vectors/vecnorm.h"
 #include "linalg/vectors/vecscale.h"
 
+/*
+ * Linear Algebra - Matrices
+ * Matrix operations for m×n matrices
+ */
+#include "linalg/matricies/matadd.h"
+#include "linalg/matricies/matmul.h"
+#include "linalg/matricies/matscale.h"
+#include "linalg/matricies/mattranspose.h"
+
 #ifdef __cplusplus
 }
 #endif
