@@ -1,7 +1,7 @@
 #include <math.h>
-#include "primitive/exponents.h"
+#include "../../../include/primitive/exponents.h"
 
-double exponents(float value, float exponent){
+double exponents(double value, double exponent){
 
 	if (value == 0 && exponent == 0){
 

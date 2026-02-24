@@ -36,6 +36,14 @@ extern "C" {
 #include "primitive/subtract.h"
 
 /*
+ * Activation Functions
+ * Neural network activation functions
+ */
+#include "activations/sigmoid.h"
+#include "activations/relu.h"
+#include "activations/softmax.h"
+
+/*
  * Calculus
  * Numerical differentiation and integration
  */
