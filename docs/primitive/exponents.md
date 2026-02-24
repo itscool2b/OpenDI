@@ -5,7 +5,7 @@
 ```c
 #include "primitive/exponents.h"
 
-double exponents(float value, float exponent);
+double exponents(double value, double exponent);
 ```
 
 ## Description
@@ -24,10 +24,10 @@ Computes the power of a number using `pow()` from libm.
 ## Example
 
 ```c
-double result1 = exponents(2.0f, 3.0f);    // Returns 8.0
-double result2 = exponents(4.0f, 0.5f);    // Returns 2.0 (sqrt)
-double result3 = exponents(2.0f, -2.0f);   // Returns 0.25
-double result4 = exponents(0.0f, 0.0f);    // Returns 1.0
+double result1 = exponents(2.0, 3.0);    // Returns 8.0
+double result2 = exponents(4.0, 0.5);    // Returns 2.0 (sqrt)
+double result3 = exponents(2.0, -2.0);   // Returns 0.25
+double result4 = exponents(0.0, 0.0);    // Returns 1.0
 ```
 
 ## Notes
