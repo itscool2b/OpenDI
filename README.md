@@ -1,12 +1,18 @@
 # OpenDI
 
-A lightweight, portable C library for mathematical computation. Designed for bare-metal environments, embedded systems, and general-purpose numerical computing.
+A lightweight, portable C library for mathematical computation and machine learning. Designed for bare-metal environments, embedded systems, and general-purpose numerical computing.
 
 ## Features
 
 - **Primitive Operations** - Basic arithmetic (add, subtract, multiply, divide, exponents, absolute, minmax, rounding)
 - **Calculus** - Numerical differentiation (forward, backward, central) and integration (Romberg)
-- **Linear Algebra** - Vector operations (addition, dot product, cross product, norm, scaling)
+- **Linear Algebra** - Vectors (add, dot, cross, norm, scale) and matrices (multiply, add, scale, transpose)
+- **Activations** - Neural network activation functions (relu, sigmoid, softmax)
+- **Loss Functions** - Training loss computation (MSE, cross-entropy)
+- **Backward Functions** - Gradient computation for activations and matrix operations
+- **Optimizers** - Weight update algorithms (SGD)
+- **Random** - Random number generation for weight initialization (uniform, normal, seeding)
+- **Statistics** - Data preprocessing (normalize)
 - **Zero Dependencies** - Pure C99, no external libraries required
 - **Bare Metal Ready** - Works on embedded systems without OS
 
@@ -48,13 +54,49 @@ src/
 │   └── integrals/
 │       └── romberg
 │
-└── linalg/
-    └── vectors/
-        ├── vecadd
-        ├── vecscale
-        ├── vecdot
-        ├── veccross
-        └── vecnorm
+├── linalg/
+│   ├── vectors/
+│   │   ├── vecadd
+│   │   ├── vecscale
+│   │   ├── vecdot
+│   │   ├── veccross
+│   │   └── vecnorm
+│   │
+│   └── matricies/
+│       ├── matadd
+│       ├── matmul
+│       ├── matscale
+│       └── mattranspose
+│
+├── activations/
+│   ├── relu
+│   ├── sigmoid
+│   └── softmax
+│
+├── loss/
+│   ├── mse_loss
+│   └── cross_entropy
+│
+├── backward/
+│   ├── activations/
+│   │   ├── relu_backward
+│   │   ├── sigmoid_backward
+│   │   └── softmax_backward
+│   │
+│   └── linalg/
+│       ├── matmul_backward_a
+│       └── matmul_backward_b
+│
+├── optimizers/
+│   └── sgd_update
+│
+├── random/
+│   ├── random_seed
+│   ├── random_uniform
+│   └── random_normal
+│
+└── statistics/
+    └── normalize
 ```
 
 ## Quick Start
@@ -67,15 +109,15 @@ Include the master header to access all functionality:
 int main() {
     // Create an arena for memory allocation
     Arena *arena = arena_create(1024);
-    
+
     // Basic arithmetic
     double sum = add_numbers(3, 1.0, 2.0, 3.0);  // Returns 6.0
-    
+
     // Vector operations (using arena)
     double a[] = {1.0, 2.0, 3.0};
     double b[] = {4.0, 5.0, 6.0};
     double *result = vecadd(arena, a, b, 3);  // Returns {5.0, 7.0, 9.0}
-    
+
     // Free everything at once
     arena_destroy(arena);
     return 0;
@@ -92,6 +134,7 @@ Or include individual modules:
 #include "primitive/add.h"           // Just arithmetic
 #include "calculus/romberg.h"        // Just integration
 #include "linalg/vectors/vecadd.h"   // Just vector ops (requires arena)
+#include "loss/mse_loss.h"           // Just loss functions
 ```
 
 ## License
