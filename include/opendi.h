@@ -72,6 +72,48 @@ extern "C" {
 #include "linalg/matricies/matscale.h"
 #include "linalg/matricies/mattranspose.h"
 
+/*
+ * Loss Functions
+ * Loss functions for measuring prediction error
+ */
+#include "loss/mse_loss.h"
+#include "loss/cross_entropy.h"
+
+/*
+ * Backward Functions - Activations
+ * Gradient functions for activation layers
+ */
+#include "backward/activations/relu_backward.h"
+#include "backward/activations/sigmoid_backward.h"
+#include "backward/activations/softmax_backward.h"
+
+/*
+ * Backward Functions - Linear Algebra
+ * Gradient functions for matrix operations
+ */
+#include "backward/linalg/matmul_backward_a.h"
+#include "backward/linalg/matmul_backward_b.h"
+
+/*
+ * Optimizers
+ * Weight update algorithms for training
+ */
+#include "optimizers/sgd_update.h"
+
+/*
+ * Random
+ * Random number generation for weight initialization
+ */
+#include "random/random_seed.h"
+#include "random/random_uniform.h"
+#include "random/random_normal.h"
+
+/*
+ * Statistics
+ * Statistical functions for data preprocessing
+ */
+#include "statistics/normalize.h"
+
 #ifdef __cplusplus
 }
 #endif
