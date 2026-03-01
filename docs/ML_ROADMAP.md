@@ -1,62 +1,100 @@
 # ML Functions Roadmap
 
-Functions to add for machine learning support.
-
-## Priority 1: Core (Start Here)
-
-### Matrix Operations
-| Function | Signature | Purpose |
-|----------|-----------|---------|
-| matmul | `double *matmul(Arena*, double *A, double *B, int m, int n, int p)` | Matrix multiplication |
-| mattranspose | `double *mattranspose(Arena*, double *A, int m, int n)` | Transpose matrix |
-| matadd | `double *matadd(Arena*, double *A, double *B, int m, int n)` | Element-wise add |
-| matscale | `double *matscale(Arena*, double *A, double s, int m, int n)` | Scalar multiply |
-
-### Activations
-| Function | Signature | Purpose |
-|----------|-----------|---------|
-| relu | `double relu(double x)` | max(0, x) |
-| sigmoid | `double sigmoid(double x)` | 1/(1+e^-x) |
-| tanh_act | `double tanh_act(double x)` | Hyperbolic tangent |
-| softmax | `double *softmax(Arena*, double *v, int n)` | exp(xi)/sum(exp(x)) |
-
-### Random
-| Function | Signature | Purpose |
-|----------|-----------|---------|
-| random_uniform | `double random_uniform(double min, double max)` | Uniform distribution |
-| random_normal | `double random_normal(double mean, double std)` | Gaussian distribution |
-| random_xavier | `double random_xavier(int n_in, int n_out)` | Xavier/Glorot init |
+This roadmap focuses on the **minimum required functions** to make OpenDI a working ML library that can actually train neural networks.
 
 ---
 
-## Priority 2: Essential
+## ✅ COMPLETED
 
-### Loss Functions
+### Matrix Operations
+| Function | Status | Purpose |
+|----------|--------|---------|
+| matmul | ✅ DONE | Matrix multiplication |
+| mattranspose | ✅ DONE | Transpose matrix |
+| matadd | ✅ DONE | Element-wise add |
+| matscale | ✅ DONE | Scalar multiply |
+
+### Activations (Forward Pass)
+| Function | Status | Purpose |
+|----------|--------|---------|
+| relu | ✅ DONE | max(0, x) |
+| sigmoid | ✅ DONE | 1/(1+e^-x) |
+| softmax | ✅ DONE | exp(xi)/sum(exp(x)) |
+
+---
+
+## 🎯 PRIORITY 0: Minimum Viable ML (7 functions)
+
+**These 7 functions are REQUIRED to train any neural network.**
+
+### Loss Functions (1/7)
 | Function | Signature | Purpose |
 |----------|-----------|---------|
-| mse_loss | `double mse_loss(double *y_t, double *y_p, int n)` | Mean squared error |
-| mae_loss | `double mae_loss(double *y_t, double *y_p, int n)` | Mean absolute error |
-| cross_entropy | `double cross_entropy(double *y_t, double *y_p, int n)` | Cross-entropy loss |
+| mse_loss | `double mse_loss(double *predictions, double *targets, int n)` | Mean squared error - universal loss |
 
-### Statistics
+### Backward/Gradient Functions (4/7)
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| relu_backward | `double *relu_backward(Arena*, double *dout, double *input, int n)` | Gradient through ReLU |
+| sigmoid_backward | `double *sigmoid_backward(Arena*, double *dout, double *output, int n)` | Gradient through sigmoid |
+| matmul_backward_a | `double *matmul_backward_a(Arena*, double *dout, double *b, int m, int n, int p)` | Gradient for first matrix (dout @ B^T) |
+| matmul_backward_b | `double *matmul_backward_b(Arena*, double *a, double *dout, int m, int n, int p)` | Gradient for second matrix (A^T @ dout) |
+
+### Optimizer (1/7)
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| sgd_update | `double *sgd_update(Arena*, double *weights, double *grads, double lr, int n)` | Weight update: w = w - lr * grad |
+
+### Random Initialization (1/7)
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| random_uniform | `double *random_uniform(Arena*, double min, double max, int n)` | Uniform random in [min, max] |
+
+**With these 7 functions, you can train a working neural network.**
+
+---
+
+## 🔥 PRIORITY 1: Essential Extras (5 functions)
+
+**These make training significantly better but aren't strictly required.**
+
+### Better Loss (1/5)
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| cross_entropy | `double cross_entropy(double *predictions, double *targets, int n)` | Better for classification |
+
+### Better Initialization (1/5)
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| random_normal | `double *random_normal(Arena*, double mean, double std, int n)` | Gaussian distribution (better than uniform) |
+
+### Reproducibility (1/5)
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| random_seed | `void random_seed(unsigned int seed)` | Set seed for reproducible results |
+
+### Data Preprocessing (2/5)
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| normalize | `double *normalize(Arena*, double *v, int n)` | Z-score: (x - mean) / std |
+| softmax_backward | `double *softmax_backward(Arena*, double *dout, double *output, int n)` | Gradient through softmax |
+
+---
+
+## 💎 PRIORITY 2: Nice to Have
+
+### More Statistics
 | Function | Signature | Purpose |
 |----------|-----------|---------|
 | mean | `double mean(double *v, int n)` | Arithmetic mean |
 | variance | `double variance(double *v, int n)` | Population variance |
 | stddev | `double stddev(double *v, int n)` | Standard deviation |
-| zscore_normalize | `double *zscore_normalize(Arena*, double *v, int n)` | (x - mean) / std |
 | minmax_scale | `double *minmax_scale(Arena*, double *v, int n, double mn, double mx)` | Scale to range |
 
-### Elementary
+### Better Optimizers
 | Function | Signature | Purpose |
 |----------|-----------|---------|
-| exp_func | `double exp_func(double x)` | e^x (avoid math.h conflict) |
-| log_func | `double log_func(double x)` | Natural log |
-| pow_func | `double pow_func(double b, double e)` | b^e |
-
----
-
-## Priority 3: Useful
+| adam_update | `double *adam_update(Arena*, double *w, double *g, double lr, ...)` | Adam optimizer (faster convergence) |
 
 ### Vector Reductions
 | Function | Signature | Purpose |
@@ -66,7 +104,19 @@ Functions to add for machine learning support.
 | vecmin | `double vecmin(double *v, int n)` | Minimum value |
 | argmax | `int argmax(double *v, int n)` | Index of max |
 | argmin | `int argmin(double *v, int n)` | Index of min |
-| vecclip | `void vecclip(double *v, int n, double mn, double mx)` | Clip values |
+
+---
+
+## 🚀 PRIORITY 3: Advanced (Future)
+
+### Vector Reductions
+| Function | Signature | Purpose |
+|----------|-----------|---------|
+| vecsum | `double vecsum(double *v, int n)` | Sum of elements |
+| vecmax | `double vecmax(double *v, int n)` | Maximum value |
+| vecmin | `double vecmin(double *v, int n)` | Minimum value |
+| argmax | `int argmax(double *v, int n)` | Index of max |
+| argmin | `int argmin(double *v, int n)` | Index of min |
 
 ### More Activations
 | Function | Signature | Purpose |
@@ -75,56 +125,44 @@ Functions to add for machine learning support.
 | elu | `double elu(double x, double a)` | Exponential LU |
 | swish | `double swish(double x)` | x * sigmoid(x) |
 
-### Distance Metrics
-| Function | Signature | Purpose |
-|----------|-----------|---------|
-| euclidean_dist | `double euclidean_dist(double *a, double *b, int n)` | L2 distance |
-| manhattan_dist | `double manhattan_dist(double *a, double *b, int n)` | L1 distance |
-| cosine_sim | `double cosine_sim(double *a, double *b, int n)` | Cosine similarity |
-
----
-
-## Priority 4: Advanced
-
 ### Matrix Decomposition
 | Function | Signature | Purpose |
 |----------|-----------|---------|
 | matinverse | `double *matinverse(Arena*, double *A, int n)` | Matrix inverse |
 | matdet | `double matdet(double *A, int n)` | Determinant |
-| matsolve | `double *matsolve(Arena*, double *A, double *b, int n)` | Solve Ax = b |
 
-### Convolution
+### Convolution (for CNNs)
 | Function | Signature | Purpose |
 |----------|-----------|---------|
 | conv1d | `double *conv1d(Arena*, double *in, double *k, int n, int kn)` | 1D convolution |
 | maxpool1d | `double *maxpool1d(Arena*, double *in, int n, int p)` | Max pooling |
-| avgpool1d | `double *avgpool1d(Arena*, double *in, int n, int p)` | Average pooling |
-
-### Random (More)
-| Function | Signature | Purpose |
-|----------|-----------|---------|
-| random_he | `double random_he(int n_in)` | He initialization |
-| random_shuffle | `void random_shuffle(int *a, int n)` | Shuffle array |
-| random_seed | `void random_seed(unsigned int s)` | Set seed |
 
 ---
 
-## Folder Structure
+## 📊 SUMMARY
+
+**To make OpenDI a functional ML library:**
+- **Minimum (7 functions)**: Loss, backward passes, SGD, random init → Can train
+- **Extras (5 functions)**: Better loss, preprocessing, reproducibility → Train well
+- **Total: 12 functions needed**
+
+Everything else is optimization or advanced features for later.
+
+---
+
+## 📁 Folder Structure
 
 ```
 include/
-├── linalg/
-│   ├── mat/           # Matrix operations
-│   │   ├── matmul.h
-│   │   ├── mattranspose.h
-│   │   └── ...
-│   └── distance/      # Distance metrics
-│       └── ...
-├── ml/
-│   ├── activations/   # Activation functions
-│   ├── loss/          # Loss functions
-│   └── conv/          # Convolution ops
-├── stats/             # Statistics
-└── utils/
-    └── random/        # Random numbers
+├── loss/              # Loss functions (mse, cross_entropy)
+├── backward/          # Gradient functions
+│   ├── activations/   # relu_backward, sigmoid_backward, softmax_backward
+│   └── linalg/        # matmul_backward_a, matmul_backward_b
+├── optimizers/        # sgd_update, adam_update
+├── random/            # random_uniform, random_normal, random_seed
+├── statistics/        # mean, stddev, normalize
+├── activations/       # ✅ DONE (relu, sigmoid, softmax)
+└── linalg/
+    ├── vectors/       # ✅ DONE
+    └── matricies/     # ✅ DONE
 ```
