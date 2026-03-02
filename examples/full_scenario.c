@@ -1,39 +1,6 @@
-/*
- * OpenDI Full Scenario Test
- * 
- * Tests all 18 functions working together in realistic scenarios:
- * - Particle motion analysis (physics simulation)
- * - Force field analysis (work and energy calculations)
- * - Statistical pipeline (data analysis)
- * - Precision workflow (numerical methods)
- * 
- * Functions tested:
- *   Primitive: absolute, add, subtract, multiply, divide, exponents, minmax, roundval
- *   Calculus:  forwarddiff, backwarddiff, centraldiff, secondderivative, romberg
- *   Vectors:   vecadd, vecscale, vecdot, veccross, vecnorm
- */
-
 #include <stdio.h>
 #include <math.h>
-#include "../../../include/primitive/absolute.h"
-#include "../../../include/primitive/add.h"
-#include "../../../include/primitive/subtract.h"
-#include "../../../include/primitive/multiply.h"
-#include "../../../include/primitive/divide.h"
-#include "../../../include/primitive/exponents.h"
-#include "../../../include/primitive/minmax.h"
-#include "../../../include/primitive/rounding.h"
-#include "../../../include/calculus/forwarddiff.h"
-#include "../../../include/calculus/backwarddiff.h"
-#include "../../../include/calculus/centraldiff.h"
-#include "../../../include/calculus/secondderivative.h"
-#include "../../../include/calculus/romberg.h"
-#include "../../../include/linalg/vectors/vecadd.h"
-#include "../../../include/linalg/vectors/veccross.h"
-#include "../../../include/linalg/vectors/vecdot.h"
-#include "../../../include/linalg/vectors/vecnorm.h"
-#include "../../../include/linalg/vectors/vecscale.h"
-#include "../../../include/arena.h"
+#include "../include/opendi.h"
 
 #define EPSILON 1e-6
 #define PI 3.14159265358979323846
