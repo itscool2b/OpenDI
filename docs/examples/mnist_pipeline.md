@@ -5,14 +5,20 @@
 ```c
 gcc -Iinclude examples/mnist_pipeline.c \
   src/linalg/matricies/matmul.c src/linalg/matricies/mattranspose.c \
-  src/activations/relu.c src/activations/softmax.c \
+  src/activations/relu.c src/activations/sigmoid.c \
   src/primitive/exponents/exponents.c \
   src/loss/cross_entropy.c \
   src/backward/activations/relu_backward.c \
+  src/backward/activations/sigmoid_backward.c \
   src/backward/linalg/matmul_backward_a.c \
   src/backward/linalg/matmul_backward_b.c \
   src/optimizers/sgd_update.c \
   src/random/random_seed.c src/random/random_normal.c \
+  src/pipeline/init_weights.c \
+  src/pipeline/accuracy.c \
+  src/pipeline/cross_entropy_backward.c \
+  src/pipeline/dense_forward.c \
+  src/pipeline/dense_backward.c \
   -o mnist_pipeline -lm
 ```
 
@@ -27,26 +33,22 @@ The training process:
 1. Read IDX binary files into image/label arrays
 2. Normalize pixel values to [0, 1]
 3. One-hot encode training labels (10 classes)
-4. Initialize W1 (784x128) and W2 (128x10) with random_normal()
+4. Initialize W1 (784x128) and W2 (128x10) with init_weights()
 5. For each epoch:
-   z1   = matmul(X, W1)                    (1000x784 @ 784x128 = 1000x128)
-   h    = relu(z1)                          (element-wise)
-   z2   = matmul(h, W2)                    (1000x128 @ 128x10 = 1000x10)
-   pred = softmax(z2)                      (per-row, 10 classes each)
+   h    = dense_forward(X, W1, ACTIVATION_RELU)
+   pred = dense_forward(h, W2, ACTIVATION_SOFTMAX)
    loss = cross_entropy(pred, targets)
-   d_z2 = (pred - targets) / N_TRAIN       (softmax + cross-entropy gradient)
-   d_W2 = matmul_backward_b(h, d_z2)
-   d_h  = matmul_backward_a(d_z2, W2)
-   d_z1 = relu_backward(d_h, z1)
-   d_W1 = matmul_backward_b(X, d_z1)
-   W1   = sgd_update(W1, d_W1, lr)
-   W2   = sgd_update(W2, d_W2, lr)
-6. Evaluate predictions on test set
+   d_z2 = cross_entropy_backward(pred, targets)
+   grad2 = dense_backward(d_z2, h, W2, ACTIVATION_NONE)
+   grad1 = dense_backward(grad2.d_input, X, W1, ACTIVATION_RELU)
+   W1 = sgd_update(W1, grad1.d_weights, lr)
+   W2 = sgd_update(W2, grad2.d_weights, lr)
+6. Evaluate predictions on test set with accuracy()
 ```
 
 ## Dataset
 
-The MNIST IDX binary files must be in `mnist_data/` in the working directory:
+The MNIST IDX binary files must be in `datasets/mnist_data/` in the working directory:
 
 - `train-images.idx3-ubyte`: 60000 training images (first 1000 used)
 - `train-labels.idx1-ubyte`: 60000 training labels (first 1000 used)
@@ -68,16 +70,14 @@ Each image is 28x28 pixels (784 values), stored as unsigned bytes. The IDX image
 ## OpenDI Functions Used
 
 - `random_seed()`: Seed the RNG for reproducible weight initialization
-- `random_normal()`: Initialize weights from a Gaussian distribution
-- `matmul()`: Forward pass matrix multiplications (X @ W1, h @ W2)
-- `relu()`: Hidden layer activation applied element-wise
-- `softmax()`: Output layer activation applied per-row (10 classes)
+- `init_weights()`: Initialize weights from a Gaussian distribution (malloc'd)
+- `dense_forward()`: Forward pass: matmul + activation (RELU for hidden, SOFTMAX for output)
 - `cross_entropy()`: Cross-entropy loss between predictions and one-hot targets
-- `relu_backward()`: Gradient of relu for backpropagation
-- `matmul_backward_a()`: Gradient of matmul with respect to input (d_z2 @ W2^T)
-- `matmul_backward_b()`: Gradient of matmul with respect to weights (A^T @ dout)
+- `cross_entropy_backward()`: Combined softmax + cross-entropy gradient
+- `dense_backward()`: Backward pass: activation_backward + matmul gradients
 - `sgd_update()`: Weight update (W = W - lr * grad)
-- `arena_create()`, `arena_push()`, `arena_clear()`, `arena_destroy()`: Memory management
+- `accuracy()`: Compute multiclass classification accuracy (argmax)
+- `arena_create()`, `arena_clear()`, `arena_destroy()`: Memory management
 
 ## Example
 
@@ -111,16 +111,14 @@ Test Accuracy: 437/500 (87.4%)
 
 ## Notes
 
-The arena is cleared after each epoch to reuse memory for temporary allocations. Weights are copied to malloc'd arrays before clearing.
+The arena is cleared after each epoch to reuse memory for temporary allocations. Weights are heap-allocated via `init_weights()` and survive arena clears.
 
 Weight initialization uses He-style standard deviations: 0.05 for W1 (approximating sqrt(2/784)) and 0.1 for W2 (approximating sqrt(2/128)). This ensures activations maintain reasonable scale through the network.
 
-Softmax is applied per-row by calling `softmax()` once per sample. Arena allocations are contiguous, so the resulting `pred` pointer spans all N_TRAIN rows as a flat array.
-
-The combined softmax + cross-entropy gradient simplifies to `(pred - target) / N`, avoiding the need for a separate `softmax_backward()` call.
+The softmax + cross-entropy gradient is computed with `cross_entropy_backward()`, which returns `(pred - target) / N`. This is paired with `ACTIVATION_NONE` in `dense_backward()` since the activation gradient is already incorporated.
 
 The model achieves 100% training accuracy by epoch 95 and 87.4% test accuracy on 500 unseen images. The gap indicates overfitting, expected with 100K+ parameters and only 1000 training samples. Increasing `N_TRAIN` would improve generalization.
 
 ## See Also
 
-random_seed(3), random_normal(3), matmul(3), relu(3), softmax(3), cross_entropy(3), relu_backward(3), matmul_backward_a(3), matmul_backward_b(3), sgd_update(3)
+init_weights(3), dense_forward(3), dense_backward(3), cross_entropy(3), cross_entropy_backward(3), accuracy(3), sgd_update(3)
