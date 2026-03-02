@@ -5,7 +5,7 @@ A lightweight, portable C library for mathematical computation and machine learn
 ## Features
 
 - **Primitive Operations** - Basic arithmetic (add, subtract, multiply, divide, exponents, absolute, minmax, rounding)
-- **Calculus** - Numerical differentiation (forward, backward, central) and integration (Romberg)
+- **Calculus** - Numerical differentiation (forward, backward, central, second derivative) and integration (Romberg)
 - **Linear Algebra** - Vectors (add, dot, cross, norm, scale) and matrices (multiply, add, scale, transpose)
 - **Activations** - Neural network activation functions (relu, sigmoid, softmax)
 - **Loss Functions** - Training loss computation (MSE, cross-entropy)
@@ -16,20 +16,6 @@ A lightweight, portable C library for mathematical computation and machine learn
 - **Pipeline** - Pre-built ML pipeline functions (dense layers, batch activations, loss gradients, utilities)
 - **Zero Dependencies** - Pure C99, no external libraries required
 - **Bare Metal Ready** - Works on embedded systems without OS
-
-## Documentation
-
-API documentation is located in `docs/`. Each function has its own documentation file organized by module.
-
-## Testing
-
-The test suite is organized into three categories:
-
-- **`tests/unit/`** - Unit tests for individual functions
-- **`tests/scenarios/`** - Real-world scenario tests (functions working together)
-- **`tests/performance/`** - Hardware-level performance benchmarks
-
-See `tests/README.md` for detailed testing instructions.
 
 ## Current Modules
 
@@ -139,7 +125,7 @@ int main() {
 
 Compile with:
 ```bash
-gcc -I/path/to/opendi/include your_program.c -o your_program -lm
+gcc -Iinclude your_program.c src/needed/files.c -o your_program -lm
 ```
 
 Or include individual modules:
@@ -149,6 +135,27 @@ Or include individual modules:
 #include "linalg/vectors/vecadd.h"   // Just vector ops (requires arena)
 #include "loss/mse_loss.h"           // Just loss functions
 ```
+
+## Examples
+
+Real-world examples are in `examples/` with documentation in `docs/examples/`:
+
+- **`full_scenario.c`** - Physics simulation, force field analysis, statistical pipeline, and precision workflow using primitive, calculus, and vector operations
+- **`cricket_pipeline.c`** - Single-layer neural network for cricket match prediction (sigmoid + MSE + SGD)
+- **`mnist_pipeline.c`** - Two-layer neural network for MNIST digit classification (relu + softmax + cross-entropy + SGD)
+
+## Documentation
+
+API documentation is in `docs/`. Each function has its own documentation file organized by module.
+
+## Testing
+
+The test suite is in `tests/`:
+
+- **`tests/unit/`** - Unit tests for individual functions (48 test files)
+- **`tests/performance/`** - Hardware-level performance benchmarks
+
+See `tests/README.md` for detailed testing instructions.
 
 ## License
 
@@ -160,8 +167,8 @@ See LICENSE file for details.
 
 This project uses AI assistance for:
 
-- **File organization** - Test suite structure (unit/scenarios/performance)
+- **File organization** - Test suite structure, module layout
 - **Documentation** - API docs, README updates, arena allocator guide
-- **Testing** - Unit tests, scenario tests, performance benchmarks
+- **Testing** - Unit tests, performance benchmarks
 
 We believe in transparency and not slopping code.

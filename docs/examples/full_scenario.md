@@ -1,12 +1,30 @@
-# OpenDI Scenario Test Report
+# full_scenario
 
-## Overview
+## Synopsis
 
-This document details the comprehensive scenario testing of the OpenDI library, analyzing how all 18 functions work together in realistic mathematical workflows.
+```c
+gcc -Iinclude examples/full_scenario.c \
+  src/primitive/absolute/absolute.c src/primitive/add/add.c \
+  src/primitive/subtract/subtract.c src/primitive/multiply/multiply.c \
+  src/primitive/divide/divide.c src/primitive/exponents/exponents.c \
+  src/primitive/minmax/minmax.c src/primitive/rounding/rounding.c \
+  src/calculus/derivatives/forwarddiff/forwarddiff.c \
+  src/calculus/derivatives/backwarddiff/backwarddiff.c \
+  src/calculus/derivatives/centraldiff/centraldiff.c \
+  src/calculus/derivatives/secondderivative/secondderivative.c \
+  src/calculus/integrals/romberg/romberg.c \
+  src/linalg/vectors/vecadd.c src/linalg/vectors/vecdot.c \
+  src/linalg/vectors/veccross.c src/linalg/vectors/vecnorm.c \
+  src/linalg/vectors/vecscale.c \
+  -o full_scenario -lm
+```
 
-**Test File:** `test_opendi_full_scenario.c`  
-**Date:** 2026-02-18  
-**Functions Tested:** 18 (8 primitive, 5 calculus, 5 vector)
+## Description
+
+Demonstrates 18 OpenDI functions working together in realistic mathematical workflows: particle motion analysis, force field analysis, statistical pipelines, and precision workflows.
+
+**Source File:** `examples/full_scenario.c`
+**Functions Used:** 18 (8 primitive, 5 calculus, 5 vector)
 
 ---
 
