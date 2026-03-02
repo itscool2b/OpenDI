@@ -13,7 +13,7 @@ int main(){
 	double features[N_SAMPLES * N_FEATURES];
 	double targets[N_SAMPLES];
 
-	FILE *fp = fopen("pak_vs_ind_cricket_dataset.csv", "r");
+	FILE *fp = fopen("datasets/pak_vs_ind_cricket_dataset.csv", "r");
 	char line[512];
 	fgets(line, sizeof(line), fp);
 
@@ -43,71 +43,55 @@ int main(){
 
 	Arena *arena = arena_create(65536);
 
-	double col[N_SAMPLES];
-	for (int j = 0; j < N_FEATURES; j++){
-
-		for (int i = 0; i < N_SAMPLES; i++)
-			col[i] = features[i * N_FEATURES + j];
-
-		double *normed = normalize(arena, col, N_SAMPLES);
-
-		for (int i = 0; i < N_SAMPLES; i++)
-			features[i * N_FEATURES + j] = normed[i];
-
-		arena_clear(arena);
-
-	}
+	double *normed = batch_normalize(arena, features, N_SAMPLES, N_FEATURES);
+	memcpy(features, normed, N_SAMPLES * N_FEATURES * sizeof(double));
+	arena_clear(arena);
 
 	random_seed(42);
-	double *init = random_normal(arena, 0.0, 0.1, N_FEATURES);
-	double weights[N_FEATURES];
-	memcpy(weights, init, N_FEATURES * sizeof(double));
-	arena_clear(arena);
+	double *weights = init_weights(N_FEATURES, 0.0, 0.1);
 
 	printf("=== Training ===\n\n");
 
 	for (int epoch = 0; epoch < EPOCHS; epoch++){
 
-		double *z = matmul(arena, features, weights, N_SAMPLES, N_FEATURES, 1);
-
-		double pred[N_SAMPLES];
-		for (int i = 0; i < N_SAMPLES; i++)
-			pred[i] = sigmoid(z[i]);
+		double *cache;
+		double *pred = dense_forward(arena, features, weights, N_SAMPLES, N_FEATURES, 1,
+		                             ACTIVATION_SIGMOID, &cache);
 
 		double loss = mse_loss(pred, targets, N_SAMPLES);
 
 		if (epoch % 500 == 0)
 			printf("Epoch %4d  loss: %.6f\n", epoch, loss);
 
-		double d_loss[N_SAMPLES];
-		for (int i = 0; i < N_SAMPLES; i++)
-			d_loss[i] = 2.0 * (pred[i] - targets[i]) / N_SAMPLES;
+		double *d_loss = mse_backward(arena, pred, targets, N_SAMPLES);
 
-		double *d_sig = sigmoid_backward(arena, d_loss, pred, N_SAMPLES);
-		double *d_w = matmul_backward_b(arena, features, d_sig, N_SAMPLES, N_FEATURES, 1);
-		double *new_w = sgd_update(arena, weights, d_w, LR, N_FEATURES);
+		LayerGrad grad = dense_backward(arena, d_loss, features, weights, cache,
+		                                N_SAMPLES, N_FEATURES, 1, ACTIVATION_SIGMOID);
 
+		double *new_w = sgd_update(arena, weights, grad.d_weights, LR, N_FEATURES);
 		memcpy(weights, new_w, N_FEATURES * sizeof(double));
 		arena_clear(arena);
 
 	}
 
-	double *z = matmul(arena, features, weights, N_SAMPLES, N_FEATURES, 1);
-
-	double pred[N_SAMPLES];
-	for (int i = 0; i < N_SAMPLES; i++)
-		pred[i] = sigmoid(z[i]);
+	double *cache;
+	double *pred = dense_forward(arena, features, weights, N_SAMPLES, N_FEATURES, 1,
+	                             ACTIVATION_SIGMOID, &cache);
 
 	double final_loss = mse_loss(pred, targets, N_SAMPLES);
 
+	int labels[N_SAMPLES];
+	for (int i = 0; i < N_SAMPLES; i++)
+		labels[i] = (int)targets[i];
+
+	double acc = accuracy(pred, labels, N_SAMPLES, 1);
+
 	printf("\n=== Predictions ===\n\n");
 
-	int correct = 0;
 	for (int i = 0; i < N_SAMPLES; i++){
 
 		int p = pred[i] >= 0.5 ? 1 : 0;
 		int a = (int)targets[i];
-		if (p == a) correct++;
 
 		printf("Sample %2d  pred: %.4f  class: %s  actual: %s  %s\n",
 			i + 1, pred[i],
@@ -118,10 +102,11 @@ int main(){
 	}
 
 	printf("\n=== Results ===\n");
-	printf("Accuracy: %d/%d (%.1f%%)\n", correct, N_SAMPLES, 100.0 * correct / N_SAMPLES);
+	printf("Accuracy: %d/%d (%.1f%%)\n", (int)(acc * N_SAMPLES), N_SAMPLES, 100.0 * acc);
 	printf("Final loss: %.6f\n", final_loss);
 
 	arena_destroy(arena);
+	free(weights);
 
 	return 0;
 

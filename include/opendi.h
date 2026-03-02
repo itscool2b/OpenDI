@@ -114,6 +114,22 @@ extern "C" {
  */
 #include "statistics/normalize.h"
 
+/*
+ * Pipeline
+ * Pre-built functions for composing ML pipelines
+ */
+#include "pipeline/pipeline_types.h"
+#include "pipeline/batch_relu.h"
+#include "pipeline/batch_sigmoid.h"
+#include "pipeline/batch_softmax.h"
+#include "pipeline/batch_normalize.h"
+#include "pipeline/mse_backward.h"
+#include "pipeline/cross_entropy_backward.h"
+#include "pipeline/accuracy.h"
+#include "pipeline/init_weights.h"
+#include "pipeline/dense_forward.h"
+#include "pipeline/dense_backward.h"
+
 #ifdef __cplusplus
 }
 #endif

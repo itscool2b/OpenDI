@@ -13,6 +13,7 @@ A lightweight, portable C library for mathematical computation and machine learn
 - **Optimizers** - Weight update algorithms (SGD)
 - **Random** - Random number generation for weight initialization (uniform, normal, seeding)
 - **Statistics** - Data preprocessing (normalize)
+- **Pipeline** - Pre-built ML pipeline functions (dense layers, batch activations, loss gradients, utilities)
 - **Zero Dependencies** - Pure C99, no external libraries required
 - **Bare Metal Ready** - Works on embedded systems without OS
 
@@ -95,8 +96,20 @@ src/
 │   ├── random_uniform
 │   └── random_normal
 │
-└── statistics/
-    └── normalize
+├── statistics/
+│   └── normalize
+│
+└── pipeline/
+    ├── batch_relu
+    ├── batch_sigmoid
+    ├── batch_softmax
+    ├── batch_normalize
+    ├── mse_backward
+    ├── cross_entropy_backward
+    ├── accuracy
+    ├── init_weights
+    ├── dense_forward
+    └── dense_backward
 ```
 
 ## Quick Start
