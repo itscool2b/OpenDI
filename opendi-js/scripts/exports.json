@@ -1,0 +1,76 @@
+[
+	"_glue_arena_create",
+	"_glue_arena_push",
+	"_glue_arena_clear",
+	"_glue_arena_destroy",
+
+	"_relu",
+	"_sigmoid",
+	"_softmax",
+
+	"_exponents",
+	"_absolute",
+	"_roundval",
+
+	"_forwarddiff",
+	"_backwarddiff",
+	"_central_difference",
+	"_secondderivative",
+	"_centralnth",
+	"_romberg_integrate",
+
+	"_vecadd",
+	"_vecscale",
+	"_veccross",
+	"_vecdot",
+	"_vecnorm",
+
+	"_matmul",
+	"_matadd",
+	"_matscale",
+	"_mattranspose",
+
+	"_mse_loss",
+	"_cross_entropy",
+
+	"_relu_backward",
+	"_sigmoid_backward",
+	"_softmax_backward",
+	"_matmul_backward_a",
+	"_matmul_backward_b",
+
+	"_sgd_update",
+
+	"_random_seed",
+	"_random_uniform",
+	"_random_normal",
+
+	"_normalize",
+
+	"_batch_relu",
+	"_batch_sigmoid",
+	"_batch_softmax",
+	"_batch_normalize",
+	"_mse_backward",
+	"_cross_entropy_backward",
+	"_accuracy",
+	"_init_weights",
+	"_dense_forward",
+	"_dense_backward",
+
+	"_glue_add",
+	"_glue_subtract",
+	"_glue_multiply",
+	"_glue_divide",
+	"_glue_min",
+	"_glue_max",
+	"_glue_dense_forward",
+	"_glue_get_cache_ptr",
+	"_glue_dense_backward",
+	"_glue_get_dw_ptr",
+	"_glue_get_di_ptr",
+	"_glue_free",
+
+	"_malloc",
+	"_free"
+]

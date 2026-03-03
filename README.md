@@ -14,6 +14,7 @@ A lightweight, portable C library for mathematical computation and machine learn
 - **Random** - Random number generation for weight initialization (uniform, normal, seeding)
 - **Statistics** - Data preprocessing (normalize)
 - **Pipeline** - Pre-built ML pipeline functions (dense layers, batch activations, loss gradients, utilities)
+- **JavaScript/WASM Bindings** - `opendi-js` npm package for browsers, Node.js, Deno, and Bun
 - **Zero Dependencies** - Pure C99, no external libraries required
 - **Bare Metal Ready** - Works on embedded systems without OS
 
@@ -98,6 +99,25 @@ src/
     └── dense_backward
 ```
 
+## JavaScript / WASM
+
+The `opendi-js` package compiles the C library to WebAssembly and wraps it with an idiomatic JS API:
+
+```js
+import { init } from 'opendi-js'
+const o = await init()
+
+o.add(1, 2, 3)                                    // 6
+o.matmul([1,2,3,4], [5,6,7,8], 2, 2, 2)           // Float64Array [19,22,43,50]
+o.forwarddiff(x => x * x, 3, 0.001)               // ~6.0
+
+// Training loop with Session API
+const session = o.createSession(65536)
+const fwd = session.denseForward(inputPtr, weights._ptr, m, n, p, 'sigmoid')
+```
+
+See [`opendi-js/README.md`](opendi-js/README.md) for full documentation.
+
 ## Quick Start
 
 Include the master header to access all functionality:
@@ -143,6 +163,7 @@ Real-world examples are in `examples/` with documentation in `docs/examples/`:
 - **`full_scenario.c`** - Physics simulation, force field analysis, statistical pipeline, and precision workflow using primitive, calculus, and vector operations
 - **`cricket_pipeline.c`** - Single-layer neural network for cricket match prediction (sigmoid + MSE + SGD)
 - **`mnist_pipeline.c`** - Two-layer neural network for MNIST digit classification (relu + softmax + cross-entropy + SGD)
+- **`opendi-js/test/test.mjs`** - JavaScript end-to-end tests covering all WASM bindings
 
 ## Documentation
 
