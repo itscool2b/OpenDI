@@ -1,0 +1,33 @@
+{
+	"name": "opendi-js",
+	"version": "0.1.0",
+	"description": "WASM + JS bindings for the OpenDI math/ML library",
+	"type": "module",
+	"main": "./src/opendi.cjs",
+	"module": "./src/opendi.mjs",
+	"types": "./opendi.d.ts",
+	"exports": {
+		".": {
+			"import": "./src/opendi.mjs",
+			"require": "./src/opendi.cjs"
+		}
+	},
+	"scripts": {
+		"build": "bash scripts/build.sh"
+	},
+	"files": [
+		"src/opendi.mjs",
+		"src/opendi.cjs",
+		"build/",
+		"opendi.d.ts"
+	],
+	"keywords": [
+		"wasm",
+		"math",
+		"ml",
+		"linear-algebra",
+		"neural-network",
+		"opendi"
+	],
+	"license": "MIT"
+}

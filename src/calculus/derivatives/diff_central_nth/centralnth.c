@@ -1,8 +1,9 @@
 #include "calculus/centralnth.h"
 
-double (double (*f)(double), double x, double h, int num){
+double centralnth(double (*f)(double), double x, double h, int num){
 
-//build linear algebra first and come back to this.
+	if (num == 0) return f(x);
+	if (num == 1) return (f(x + h) - f(x - h)) / (2.0 * h);
 
-
+	return (centralnth(f, x + h, h, num - 1) - centralnth(f, x - h, h, num - 1)) / (2.0 * h);
 }
