@@ -29,5 +29,12 @@
 		"neural-network",
 		"opendi"
 	],
-	"license": "MIT"
+	"license": "MIT",
+	"author": "itscool2b",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/itscool2b/OpenDI.git",
+		"directory": "opendi-js"
+	},
+	"homepage": "https://github.com/itscool2b/OpenDI/tree/master/opendi-js"
 }
